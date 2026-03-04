@@ -1,12 +1,27 @@
 [project]
 name = "emojifyi"
-version = "0.1.0"
-description = "Pure Python emoji toolkit — encoding, lookup, search, 3,781 emojis from Unicode Emoji 16.0."
+version = "0.2.0"
+description = "Pure Python emoji toolkit -- encoding, lookup, search, CLI, MCP server, and API client for 3,781 emojis from Unicode Emoji 16.0."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [{ name = "FYIPedia" }]
-keywords = ["emoji", "unicode", "encoding", "utf8", "utf16", "html", "css", "search", "zwj"]
+keywords = [
+    "emoji",
+    "unicode",
+    "encoding",
+    "utf8",
+    "utf16",
+    "html",
+    "css",
+    "search",
+    "zwj",
+    "emoji-lookup",
+    "emoji-encoding",
+    "emoji-search",
+    "emoji-cli",
+    "mcp",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -20,14 +35,30 @@ classifiers = [
     "Topic :: Text Processing :: General",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
+    "Environment :: Console",
 ]
 dependencies = []
 
+[project.optional-dependencies]
+api = ["httpx>=0.27"]
+cli = ["typer>=0.15", "rich>=13.0"]
+mcp = ["mcp>=1.0"]
+all = ["emojifyi[api,cli,mcp]"]
+
+[project.scripts]
+emojifyi = "emojifyi.cli:app"
+
+[project.entry-points."mcp.servers"]
+emojifyi = "emojifyi.mcp_server:mcp"
+
 [project.urls]
 Homepage = "https://emojifyi.com"
+"Emoji Search" = "https://emojifyi.com/emojis/"
+"Emoji Encoding" = "https://emojifyi.com/developers/"
 Documentation = "https://emojifyi.com/developers/"
 Repository = "https://github.com/fyipedia/emojifyi"
 Issues = "https://github.com/fyipedia/emojifyi/issues"
+Changelog = "https://github.com/fyipedia/emojifyi/releases"
 
 [build-system]
 requires = ["hatchling"]
@@ -54,7 +85,11 @@ strict = true
 
 [dependency-groups]
 dev = [
+    "httpx>=0.27",
+    "mcp>=1.0",
     "mypy>=1.19.1",
     "pytest>=9.0.2",
+    "rich>=13.0",
     "ruff>=0.15.4",
+    "typer>=0.15",
 ]

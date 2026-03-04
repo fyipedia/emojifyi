@@ -4,14 +4,18 @@
 [![Python](https://img.shields.io/pypi/pyversions/emojifyi)](https://pypi.org/project/emojifyi/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Pure Python emoji toolkit for developers. Encode any emoji into 8 representations, look up metadata for 3,781 emojis, search and browse by category — all with zero dependencies.
+Pure Python emoji toolkit for developers. Encode any emoji into 8 representations, look up metadata for 3,781 emojis, search and browse by category -- all with zero dependencies. Includes a CLI, MCP server for AI assistants, and an API client for [emojifyi.com](https://emojifyi.com/).
 
-> Browse all emojis at [emojifyi.com](https://emojifyi.com/)
+> Browse all emojis at [emojifyi.com](https://emojifyi.com/) -- [search emojis](https://emojifyi.com/search/), [browse categories](https://emojifyi.com/category/), [emoji encoding tools](https://emojifyi.com/tools/unicode-lookup/), [emoji collections](https://emojifyi.com/collection/)
 
 ## Install
 
 ```bash
-pip install emojifyi
+pip install emojifyi            # Core library (zero dependencies)
+pip install emojifyi[cli]       # + CLI (typer, rich)
+pip install emojifyi[mcp]       # + MCP server for AI assistants
+pip install emojifyi[api]       # + HTTP client for emojifyi.com API
+pip install emojifyi[all]       # Everything
 ```
 
 ## Quick Start
@@ -20,7 +24,7 @@ pip install emojifyi
 from emojifyi import encode, get_emoji, search
 
 # Encode any emoji into 8 representations
-result = encode("😀")
+result = encode("\U0001f600")
 print(result.codepoint)         # U+1F600
 print(result.utf8_bytes)        # 0xF0 0x9F 0x98 0x80
 print(result.html_entity)       # &#x1F600;
@@ -30,7 +34,7 @@ print(result.java_literal)      # \uD83D\uDE00
 
 # Look up emoji metadata
 info = get_emoji("red-heart")
-print(info.character)           # ❤️
+print(info.character)           # Red heart emoji
 print(info.category)            # smileys-and-emotion
 print(info.emoji_version)       # 1.0
 
@@ -48,7 +52,7 @@ from emojifyi import (
 )
 
 # Look up by character
-info = get_emoji_by_char("🔥")
+info = get_emoji_by_char("\U0001f525")
 print(info.slug)  # fire
 
 # Browse by category
@@ -67,6 +71,90 @@ for cat in categories():
 print(emoji_count())  # 3781
 ```
 
+## CLI
+
+Requires the `cli` extra: `pip install emojifyi[cli]`
+
+```bash
+# Look up emoji by slug
+emojifyi lookup grinning-face
+
+# Look up by character
+emojifyi char "\U0001f600"
+
+# Search emojis
+emojifyi search heart
+emojifyi search fire --limit 5
+
+# Show all 8 encodings
+emojifyi encode "\U0001f600"
+
+# List categories
+emojifyi categories
+
+# Browse a category
+emojifyi browse smileys-and-emotion
+
+# Dataset statistics
+emojifyi stats
+```
+
+## MCP Server
+
+Requires the `mcp` extra: `pip install emojifyi[mcp]`
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+    "mcpServers": {
+        "emojifyi": {
+            "command": "python",
+            "args": ["-m", "emojifyi.mcp_server"]
+        }
+    }
+}
+```
+
+Available tools:
+
+| Tool | Description |
+|------|-------------|
+| `emoji_lookup` | Look up emoji by slug or character |
+| `emoji_search` | Search emojis by name |
+| `emoji_encode` | Encode emoji into 8 representations |
+| `emoji_categories` | List all 10 categories |
+| `emoji_by_category` | Browse emojis in a category |
+| `emoji_stats` | Dataset statistics |
+
+## API Client
+
+Requires the `api` extra: `pip install emojifyi[api]`
+
+```python
+from emojifyi.api import EmojiFYI
+
+with EmojiFYI() as api:
+    # Get emoji details
+    info = api.emoji("grinning-face")
+    print(info["character"])
+
+    # Search emojis
+    results = api.search("heart")
+    for r in results["results"]:
+        print(r["character"], r["cldr_name"])
+
+    # List categories
+    cats = api.categories()
+    print(cats["count"])  # 10
+
+    # Get random emoji
+    lucky = api.random()
+    print(lucky["character"], lucky["cldr_name"])
+```
+
+Full API documentation at [emojifyi.com/developers](https://emojifyi.com/developers/).
+
 ## API Reference
 
 ### Encoding
@@ -83,7 +171,7 @@ print(emoji_count())  # 3781
 | `encode_javascript(codepoint) -> str` | JavaScript literal |
 | `encode_java(char) -> str` | Java literal (with surrogates) |
 
-### Lookup & Search
+### Lookup and Search
 
 | Function | Description |
 |----------|-------------|
@@ -104,10 +192,10 @@ print(emoji_count())  # 3781
 
 ## Data Types
 
-- **`EncodingResult`** — 8-field NamedTuple: codepoint, utf8_bytes, utf16_surrogates, html_entity, css_content, python_literal, javascript_literal, java_literal
-- **`EmojiInfo`** — 12-field NamedTuple: character, slug, cldr_name, codepoint, category, subcategory, emoji_version, unicode_version, added_year, emoji_type, is_zwj, has_skin_tones
-- **`Category`** — 4-field NamedTuple: slug, name, icon, order
-- **`Subcategory`** — 4-field NamedTuple: slug, name, category_slug, order
+- **`EncodingResult`** -- 8-field NamedTuple: codepoint, utf8_bytes, utf16_surrogates, html_entity, css_content, python_literal, javascript_literal, java_literal
+- **`EmojiInfo`** -- 12-field NamedTuple: character, slug, cldr_name, codepoint, category, subcategory, emoji_version, unicode_version, added_year, emoji_type, is_zwj, has_skin_tones
+- **`Category`** -- 4-field NamedTuple: slug, name, icon, order
+- **`Subcategory`** -- 4-field NamedTuple: slug, name, category_slug, order
 
 ## Features
 
@@ -115,22 +203,30 @@ print(emoji_count())  # 3781
 - **3,781 emojis**: Full Unicode Emoji 16.0 dataset with metadata
 - **10 categories, 100 subcategories**: Browse and filter
 - **ZWJ support**: Multi-codepoint sequences, flags, keycaps, skin tones
-- **Zero dependencies**: Pure Python, bundled JSON data
+- **Zero dependencies**: Core library is pure Python with bundled JSON data
+- **CLI**: Rich terminal interface for emoji lookup, search, and encoding
+- **MCP server**: AI assistant integration with 6 tools
+- **API client**: HTTP client for emojifyi.com REST API
 - **Type-safe**: Full type annotations, `py.typed` marker (PEP 561)
 
 ## Related Packages
 
 | Package | Description |
 |---------|-------------|
-| [colorfyi](https://github.com/fyipedia/colorfyi) | Color conversion, contrast, harmonies, shades |
-| [fontfyi](https://github.com/fyipedia/fontfyi) | Google Fonts metadata, CSS helpers, font pairings |
-| [symbolfyi](https://github.com/fyipedia/symbolfyi) | Symbol & character encoding (11 formats) |
-| [unicodefyi](https://github.com/fyipedia/unicodefyi) | Unicode character toolkit (17 encodings) |
+| [colorfyi](https://colorfyi.com/) | Color conversion, WCAG contrast, harmonies, shades |
+| [symbolfyi](https://symbolfyi.com/) | Symbol and character encoding (11 formats) |
+| [unicodefyi](https://unicodefyi.com/) | Unicode character toolkit (17 encodings) |
+| [fontfyi](https://fontfyi.com/) | Google Fonts metadata, CSS helpers, font pairings |
 
 ## Links
 
-- [Emoji Browser](https://emojifyi.com/) — Browse all emojis online
-- [API Documentation](https://emojifyi.com/developers/) — REST API with free access
+- [Emoji Browser](https://emojifyi.com/) -- Browse all 3,781 emojis online
+- [Emoji Search](https://emojifyi.com/search/) -- Search emojis by name or keyword
+- [Emoji Categories](https://emojifyi.com/category/) -- Browse emojis by category
+- [Emoji Encoding Tools](https://emojifyi.com/tools/unicode-lookup/) -- Codepoint and encoding breakdown
+- [Emoji Collections](https://emojifyi.com/collection/) -- Curated emoji collections
+- [Emoji Versions](https://emojifyi.com/versions/) -- Unicode Emoji version history
+- [API Documentation](https://emojifyi.com/developers/) -- REST API with free access
 - [Source Code](https://github.com/fyipedia/emojifyi)
 
 ## License
