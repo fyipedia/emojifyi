@@ -1,0 +1,60 @@
+[project]
+name = "emojifyi"
+version = "0.1.0"
+description = "Pure Python emoji toolkit — encoding, lookup, search, 3,781 emojis from Unicode Emoji 16.0."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "FYIPedia" }]
+keywords = ["emoji", "unicode", "encoding", "utf8", "utf16", "html", "css", "search", "zwj"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Text Processing :: General",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://emojifyi.com"
+Documentation = "https://emojifyi.com/developers/"
+Repository = "https://github.com/fyipedia/emojifyi"
+Issues = "https://github.com/fyipedia/emojifyi/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/emojifyi"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF022"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.4",
+]
