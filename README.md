@@ -217,6 +217,11 @@ Full API documentation at [emojifyi.com/developers](https://emojifyi.com/develop
 | [symbolfyi](https://symbolfyi.com/) | Symbol and character encoding (11 formats) |
 | [unicodefyi](https://unicodefyi.com/) | Unicode character toolkit (17 encodings) |
 | [fontfyi](https://fontfyi.com/) | Google Fonts metadata, CSS helpers, font pairings |
+| [distancefyi](https://pypi.org/project/distancefyi/) | Haversine distance, bearing, travel times -- [distancefyi.com](https://distancefyi.com/) |
+| [timefyi](https://pypi.org/project/timefyi/) | Timezone operations, time differences -- [timefyi.com](https://timefyi.com/) |
+| [namefyi](https://pypi.org/project/namefyi/) | Korean romanization, Five Elements -- [namefyi.com](https://namefyi.com/) |
+| [unitfyi](https://pypi.org/project/unitfyi/) | Unit conversion, 200 units, 20 categories -- [unitfyi.com](https://unitfyi.com/) |
+| [holidayfyi](https://pypi.org/project/holidayfyi/) | Holiday dates, Easter calculation -- [holidayfyi.com](https://holidayfyi.com/) |
 
 ## Links
 
