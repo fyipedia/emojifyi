@@ -209,7 +209,9 @@ Full API documentation at [emojifyi.com/developers](https://emojifyi.com/develop
 - **API client**: HTTP client for emojifyi.com REST API
 - **Type-safe**: Full type annotations, `py.typed` marker (PEP 561)
 
-## Related Packages
+## FYIPedia Developer Tools
+
+Part of the [FYIPedia](https://github.com/fyipedia) open-source developer tools ecosystem:
 
 | Package | Description |
 |---------|-------------|
