@@ -1,6 +1,6 @@
 [project]
 name = "emojifyi"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pure Python emoji toolkit -- encoding, lookup, search, CLI, MCP server, and API client for 3,781 emojis from Unicode Emoji 16.0."
 readme = "README.md"
 license = "MIT"
