@@ -16,6 +16,10 @@ Pure Python emoji toolkit for developers. Encode any emoji into 8 representation
 
 - [Install](#install)
 - [Quick Start](#quick-start)
+- [What You Can Do](#what-you-can-do)
+  - [Emoji Encoding](#emoji-encoding)
+  - [Emoji Lookup & Search](#emoji-lookup--search)
+  - [Browse by Category](#browse-by-category)
 - [Advanced Usage](#advanced-usage)
 - [CLI](#cli)
 - [MCP Server](#mcp-server)
@@ -64,6 +68,104 @@ print(info.emoji_version)       # 1.0
 for emoji in search("fire")[:5]:
     print(f"{emoji.character} {emoji.cldr_name}")
 ```
+
+## What You Can Do
+
+### Emoji Encoding
+
+Every emoji can be represented in multiple encoding formats depending on the platform and programming language. The Unicode Consortium defines codepoints, but developers need UTF-8 bytes for web servers, HTML entities for markup, CSS content values for pseudo-elements, and language-specific escape sequences for source code. The `encode()` function computes all 8 representations in a single call.
+
+| Format | Example (U+1F600) | Use Case |
+|--------|-------------------|----------|
+| Codepoint | `U+1F600` | Unicode documentation, character charts |
+| UTF-8 Bytes | `0xF0 0x9F 0x98 0x80` | Web servers, file encoding, network protocols |
+| UTF-16 Surrogates | `0xD83D 0xDE00` | JavaScript internals, Java strings, Windows APIs |
+| HTML Entity | `&#x1F600;` | HTML documents, email templates |
+| CSS Content | `\1F600` | CSS `content` property, pseudo-elements |
+| Python Literal | `\U0001F600` | Python source code, string escapes |
+| JavaScript Literal | `\u{1F600}` | ES6+ JavaScript/TypeScript source code |
+| Java Literal | `\uD83D\uDE00` | Java source code (surrogate pairs) |
+
+```python
+from emojifyi import encode
+
+# Convert any emoji to all 8 encoding formats at once
+result = encode("\U0001f525")
+print(result.codepoint)         # U+1F525
+print(result.utf8_bytes)        # 0xF0 0x9F 0x94 0xA5
+print(result.html_entity)       # &#x1F525;
+print(result.css_content)       # \1F525
+print(result.javascript_literal) # \u{1F525}
+print(result.java_literal)      # \uD83D\uDD25
+```
+
+Learn more: [Emoji Unicode Lookup Tool](https://emojifyi.com/tools/unicode-lookup/) · [Emoji Encoding Converter](https://emojifyi.com/tools/encoding/)
+
+### Emoji Lookup & Search
+
+The package includes a complete dataset of 3,781 emojis from Unicode Emoji 16.0 with rich metadata for each entry: CLDR short name, category, subcategory, emoji version, unicode version, year added, and type classification. Zero-Width Joiner (ZWJ) sequences -- where multiple codepoints combine into a single visible emoji like family or profession emojis -- are fully supported with the `is_zwj` flag. Skin tone modifiers are tracked via `has_skin_tones`.
+
+```python
+from emojifyi import get_emoji, get_emoji_by_char, search
+
+# Look up emoji metadata by slug identifier
+info = get_emoji("red-heart")
+print(info.character)       # (red heart emoji)
+print(info.cldr_name)       # red heart
+print(info.category)        # smileys-and-emotion
+print(info.emoji_version)   # 1.0
+print(info.is_zwj)          # False
+
+# Look up by the emoji character itself
+fire = get_emoji_by_char("\U0001f525")
+print(fire.slug)            # fire
+print(fire.added_year)      # 2010
+
+# Search emojis by name with natural language queries
+for emoji in search("heart")[:5]:
+    print(f"{emoji.character} {emoji.cldr_name} (v{emoji.emoji_version})")
+```
+
+Learn more: [Emoji Search Engine](https://emojifyi.com/search/) · [Browse Emoji Categories](https://emojifyi.com/category/)
+
+### Browse by Category
+
+The Unicode Consortium organizes all 3,781 emojis into 10 top-level categories and 100 subcategories. Each category groups semantically related emojis -- from facial expressions and hand gestures to flags, food, and travel symbols. You can also filter by emoji version to discover which emojis were added in each Unicode release.
+
+| Category | Slug | Emojis | Description |
+|----------|------|--------|-------------|
+| Smileys & Emotion | `smileys-and-emotion` | 184 | Facial expressions, hearts, hand gestures |
+| People & Body | `people-and-body` | 393 | People, professions, body parts, skin tones |
+| Animals & Nature | `animals-and-nature` | 151 | Animals, plants, weather, earth |
+| Food & Drink | `food-and-drink` | 134 | Fruits, meals, beverages, utensils |
+| Travel & Places | `travel-and-places` | 264 | Vehicles, buildings, maps, sky |
+| Activities | `activities` | 82 | Sports, arts, games, celebrations |
+| Objects | `objects` | 299 | Tools, clothing, music, office supplies |
+| Symbols | `symbols` | 224 | Arrows, math, zodiac, geometric shapes |
+| Flags | `flags` | 275 | Country flags, regional flags, flag symbols |
+| Component | `component` | 9 | Skin tone modifiers, hair components |
+
+```python
+from emojifyi import by_category, by_version, categories, emoji_count
+
+# Browse all emojis in the food and drink category
+food = by_category("food-and-drink")
+print(f"{len(food)} food & drink emojis")
+
+# Discover new emojis added in Unicode Emoji 16.0
+new_emojis = by_version("16.0")
+for e in new_emojis[:5]:
+    print(f"{e.character} {e.cldr_name}")
+
+# List all 10 top-level emoji categories
+for cat in categories():
+    print(f"{cat.icon} {cat.name}")
+
+# Total emoji count in the dataset
+print(f"Total: {emoji_count()} emojis")  # 3781
+```
+
+Learn more: [Browse Emoji Categories](https://emojifyi.com/category/) · [Emoji Versions & Release History](https://emojifyi.com/versions/)
 
 ## Advanced Usage
 
