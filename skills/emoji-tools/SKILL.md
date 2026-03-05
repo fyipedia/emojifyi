@@ -47,6 +47,10 @@ Add to your `claude_desktop_config.json`:
 - Browsing emoji categories or searching by keyword
 - Looking up emoji metadata (version, type, ZWJ status)
 
+## Demo
+
+![EmojiFYI CLI Demo](https://raw.githubusercontent.com/fyipedia/emojifyi/main/demo.gif)
+
 ## Links
 
 - [Emoji Browser](https://emojifyi.com/emojis/)
