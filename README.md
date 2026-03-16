@@ -1,6 +1,6 @@
 # emojifyi
 
-[![PyPI](https://img.shields.io/pypi/v/emojifyi)](https://pypi.org/project/emojifyi/)
+[![PyPI version](https://agentgif.com/badge/pypi/emojifyi/version.svg)](https://pypi.org/project/emojifyi/)
 [![Python](https://img.shields.io/pypi/pyversions/emojifyi)](https://pypi.org/project/emojifyi/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
