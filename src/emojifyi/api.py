@@ -7,12 +7,9 @@ Usage::
     from emojifyi.api import EmojiFYI
 
     with EmojiFYI() as api:
-        info = api.emoji("grinning-face")
-        print(info["character"])  # grinning face
-
-        results = api.search("heart")
-        for r in results["results"]:
-            print(r["character"], r["cldr_name"])
+        items = api.list_categories()
+        detail = api.get_category("example-slug")
+        results = api.search("query")
 """
 
 from __future__ import annotations
@@ -25,146 +22,80 @@ import httpx
 class EmojiFYI:
     """API client for the emojifyi.com REST API.
 
+    Provides typed access to all emojifyi.com endpoints including
+    list, detail, and search operations.
+
     Args:
-        base_url: API base URL. Defaults to ``https://emojifyi.com/api``.
+        base_url: API base URL. Defaults to ``https://emojifyi.com``.
         timeout: Request timeout in seconds. Defaults to ``10.0``.
     """
 
     def __init__(
         self,
-        base_url: str = "https://emojifyi.com/api",
+        base_url: str = "https://emojifyi.com",
         timeout: float = 10.0,
     ) -> None:
         self._client = httpx.Client(base_url=base_url, timeout=timeout)
 
-    # -- HTTP helpers ----------------------------------------------------------
-
     def _get(self, path: str, **params: Any) -> dict[str, Any]:
-        resp = self._client.get(path, params={k: v for k, v in params.items() if v is not None})
+        resp = self._client.get(
+            path,
+            params={k: v for k, v in params.items() if v is not None},
+        )
         resp.raise_for_status()
         result: dict[str, Any] = resp.json()
         return result
 
-    # -- Endpoints -------------------------------------------------------------
+    # -- Endpoints -----------------------------------------------------------
 
-    def emoji(self, slug: str) -> dict[str, Any]:
-        """Get full emoji details by slug.
+    def list_categories(self, **params: Any) -> dict[str, Any]:
+        """List all categories."""
+        return self._get("/api/v1/categories/", **params)
 
-        Args:
-            slug: Emoji slug (e.g. ``"grinning-face"``).
+    def get_category(self, slug: str) -> dict[str, Any]:
+        """Get category by slug."""
+        return self._get(f"/api/v1/categories/" + slug + "/")
 
-        Returns:
-            Dict with character, cldr_name, codepoint, category, encoding, etc.
-        """
-        return self._get(f"/emoji/{slug}/")
+    def list_emojis(self, **params: Any) -> dict[str, Any]:
+        """List all emojis."""
+        return self._get("/api/v1/emojis/", **params)
 
-    def search(self, query: str) -> dict[str, Any]:
-        """Search emojis by name, keywords, character, or codepoint.
+    def get_emoji(self, slug: str) -> dict[str, Any]:
+        """Get emoji by slug."""
+        return self._get(f"/api/v1/emojis/" + slug + "/")
 
-        Args:
-            query: Search term (e.g. ``"heart"``, ``"fire"``).
+    def list_faqs(self, **params: Any) -> dict[str, Any]:
+        """List all faqs."""
+        return self._get("/api/v1/faqs/", **params)
 
-        Returns:
-            Dict with results list and query string.
-        """
-        return self._get("/search/", q=query)
+    def get_faq(self, slug: str) -> dict[str, Any]:
+        """Get faq by slug."""
+        return self._get(f"/api/v1/faqs/" + slug + "/")
 
-    def autocomplete(self, query: str) -> dict[str, Any]:
-        """Get fast autocomplete suggestions.
+    def list_glossary(self, **params: Any) -> dict[str, Any]:
+        """List all glossary."""
+        return self._get("/api/v1/glossary/", **params)
 
-        Args:
-            query: Partial search term (minimum 2 characters).
+    def get_term(self, slug: str) -> dict[str, Any]:
+        """Get term by slug."""
+        return self._get(f"/api/v1/glossary/" + slug + "/")
 
-        Returns:
-            Dict with suggestions list.
-        """
-        return self._get("/autocomplete/", q=query)
+    def list_stories(self, **params: Any) -> dict[str, Any]:
+        """List all stories."""
+        return self._get("/api/v1/stories/", **params)
 
-    def category(self, slug: str) -> dict[str, Any]:
-        """Get all emojis in a category.
+    def get_story(self, slug: str) -> dict[str, Any]:
+        """Get story by slug."""
+        return self._get(f"/api/v1/stories/" + slug + "/")
 
-        Args:
-            slug: Category slug (e.g. ``"smileys-and-emotion"``).
+    def search(self, query: str, **params: Any) -> dict[str, Any]:
+        """Search across all content."""
+        return self._get(f"/api/v1/search/", q=query, **params)
 
-        Returns:
-            Dict with category name, slug, icon, and emojis list.
-        """
-        return self._get(f"/category/{slug}/")
-
-    def categories(self) -> dict[str, Any]:
-        """List all emoji categories with counts.
-
-        Returns:
-            Dict with count and categories list.
-        """
-        return self._get("/categories/")
-
-    def collections(self) -> dict[str, Any]:
-        """List all curated emoji collections.
-
-        Returns:
-            Dict with count and collections list.
-        """
-        return self._get("/collections/")
-
-    def collection(self, slug: str) -> dict[str, Any]:
-        """Get a curated emoji collection with its emojis.
-
-        Args:
-            slug: Collection slug (e.g. ``"love-romance"``).
-
-        Returns:
-            Dict with collection details and emojis list.
-        """
-        return self._get(f"/collection/{slug}/")
-
-    def types(self) -> dict[str, Any]:
-        """List emoji types (basic, ZWJ, flag, keycap, skin tone) with counts.
-
-        Returns:
-            Dict with count and types list.
-        """
-        return self._get("/types/")
-
-    def versions(self) -> dict[str, Any]:
-        """List all emoji versions from 0.6 to 16.0.
-
-        Returns:
-            Dict with count and versions list.
-        """
-        return self._get("/versions/")
-
-    def years(self) -> dict[str, Any]:
-        """Get emoji timeline by year.
-
-        Returns:
-            Dict with count and years list.
-        """
-        return self._get("/years/")
-
-    def similar(self, slug: str) -> dict[str, Any]:
-        """Find emojis similar to the given emoji.
-
-        Args:
-            slug: Emoji slug (e.g. ``"grinning-face"``).
-
-        Returns:
-            Dict with emoji info and similar emojis list.
-        """
-        return self._get(f"/emoji/{slug}/similar/")
-
-    def random(self) -> dict[str, Any]:
-        """Get a random emoji.
-
-        Returns:
-            Dict with character, cldr_name, slug, codepoint, url.
-        """
-        return self._get("/random/")
-
-    # -- Context manager -------------------------------------------------------
+    # -- Lifecycle -----------------------------------------------------------
 
     def close(self) -> None:
-        """Close the underlying HTTP connection."""
+        """Close the underlying HTTP client."""
         self._client.close()
 
     def __enter__(self) -> EmojiFYI:
