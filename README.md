@@ -99,9 +99,7 @@ print(result.javascript_literal) # \u{1F525}
 print(result.java_literal)      # \uD83D\uDD25
 ```
 
-Learn more: [Emoji Unicode Lookup Tool](https://emojifyi.com/tools/unicode-lookup/) · [Emoji Encoding Converter](https://emojifyi.com/tools/encoding/)
-
-### Emoji Lookup & Search
+Learn more: [Emoji Unicode Lookup Tool](https://emojifyi.com/tools/unicode-lookup/) · ### Emoji Lookup & Search
 
 The package includes a complete dataset of 3,781 emojis from Unicode Emoji 16.0 with rich metadata for each entry: CLDR short name, category, subcategory, emoji version, unicode version, year added, and type classification. Zero-Width Joiner (ZWJ) sequences -- where multiple codepoints combine into a single visible emoji like family or profession emojis -- are fully supported with the `is_zwj` flag. Skin tone modifiers are tracked via `has_skin_tones`.
 
@@ -336,8 +334,7 @@ Full API documentation at [emojifyi.com/developers](https://emojifyi.com/develop
 ## Learn More About Emoji
 
 - **Browse**: [Emoji Browser](https://emojifyi.com/) · [Search Emojis](https://emojifyi.com/search/) · [Categories](https://emojifyi.com/category/)
-- **Tools**: [Unicode Lookup](https://emojifyi.com/tools/unicode-lookup/) · [Encoding Tool](https://emojifyi.com/tools/encoding/)
-- **Collections**: [Emoji Collections](https://emojifyi.com/collection/) · [Versions](https://emojifyi.com/versions/)
+- **Tools**: [Unicode Lookup](https://emojifyi.com/tools/unicode-lookup/) · - **Collections**: [Emoji Collections](https://emojifyi.com/collection/) · [Versions](https://emojifyi.com/versions/)
 - **API**: [REST API Docs](https://emojifyi.com/developers/) · [OpenAPI Spec](https://emojifyi.com/api/openapi.json)
 
 ## Creative FYI Family
